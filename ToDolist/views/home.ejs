@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .add-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"] {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .todo-list {
+            list-style: none;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn {
+            padding: 8px 16px;
+            background: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Todo List</h1>
+
+        <!-- Add new task form -->
+        <form action="/add" method="POST" class="add-form">
+            <input type="text" name="newTask" placeholder="Enter new task..." required>
+            <button type="submit">Add Task</button>
+        </form>
+
+        <!-- Todo list -->
+        <ul class="todo-list">
+            <% todoList.forEach(task=> { %>
+                <li class="todo-item">
+                    <span class="task-text">
+                        <%= task.task %>
+                    </span>
+                    <div class="task-actions">
+                        <a href="/edit/<%= task.id %>" class="edit-btn">Edit</a>
+                        <form action="/delete/<%= task.id %>" method="POST" style="display: inline;">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </div>
+                </li>
+                <% }); %>
+        </ul>
+    </div>
+</body>
+
+</html>

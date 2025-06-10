@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Express App</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/features">Features</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <h1>Welcome to Our Express App</h1>
+        
+        <div class="user-info">
+            <h2>User Information</h2>
+            <p><strong>Name:</strong> <%= userData.userName %></p>
+            <p><strong>Age:</strong> <%= userData.age %></p>
+            <p><strong>City:</strong> <%= userData.city %></p>
+        </div>
+        
+        <div class="content">
+            <p>This is the home page of our Express.js application.</p>
+            <p>We're using EJS as our template engine to render dynamic content.</p>
+        </div>
+    </main>
+</body>
+</html> 

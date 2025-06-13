@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">All Books</h1>
+        <a href="/books/new" class="btn btn-primary mb-4">Add New Book</a>
+    </div>
+</div>
+
+<div class="row">
+    <% books.forEach(book => { %>
+        <div class="col-md-4">
+            <div class="card book-card">
+                <img src="<%= book.image %>" class="card-img-top" alt="<%= book.title %>" style="height: 300px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title"><%= book.title %></h5>
+                    <h6 class="card-subtitle mb-2 text-muted">By <%= book.author %></h6>
+                    <p class="card-text">
+                        <strong>Price:</strong> $<%= book.price.toFixed(2) %><br>
+                        <strong>ISBN:</strong> <%= book.isbn %><br>
+                        <strong>Stock:</strong> <%= book.stock %>
+                    </p>
+                    <div class="btn-group">
+                        <a href="/books/<%= book._id %>" class="btn btn-info btn-sm">View</a>
+                        <a href="/books/<%= book._id %>/edit" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="/books/<%= book._id %>?_method=DELETE" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }); %> 

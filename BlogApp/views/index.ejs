@@ -1,0 +1,122 @@
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 mb-4">Welcome to BlogApp</h1>
+        <p class="lead mb-4">Share your thoughts, connect with others, and discover amazing stories.</p>
+        <% if (!user) { %>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/auth/register" class="btn btn-light btn-lg">Get Started</a>
+                <a href="/auth/login" class="btn btn-outline-light btn-lg">Sign In</a>
+            </div>
+        <% } else { %>
+            <a href="/blog/create" class="btn btn-light btn-lg">Create New Post</a>
+        <% } %>
+    </div>
+</section>
+
+<!-- Featured Posts -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="text-center mb-4">Latest Posts</h2>
+            </div>
+        </div>
+
+        <% if (posts && posts.length > 0) { %>
+            <div class="row">
+                <% posts.forEach(post => { %>
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="/blog/<%= post._id %>" class="text-decoration-none text-dark">
+                                        <%= post.title %>
+                                    </a>
+                                </h5>
+                                <p class="card-text text-muted">
+                                    <%= post.excerpt || post.content.substring(0, 100) + '...' %>
+                                </p>
+                                
+                                <div class="post-meta mb-3">
+                                    <small>
+                                        <i class="fas fa-user me-1"></i>
+                                        <%= post.author.username %>
+                                        <span class="mx-2">•</span>
+                                        <i class="fas fa-calendar me-1"></i>
+                                        <%= new Date(post.createdAt).toLocaleDateString() %>
+                                        <span class="mx-2">•</span>
+                                        <i class="fas fa-eye me-1"></i>
+                                        <%= post.views %>
+                                    </small>
+                                </div>
+
+                                <% if (post.tags && post.tags.length > 0) { %>
+                                    <div class="mb-3">
+                                        <% post.tags.forEach(tag => { %>
+                                            <span class="tag"><%= tag %></span>
+                                        <% }) %>
+                                    </div>
+                                <% } %>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="/blog/<%= post._id %>" class="btn btn-primary btn-sm">Read More</a>
+                                    <div class="text-muted">
+                                        <i class="fas fa-heart me-1"></i>
+                                        <%= post.likeCount || 0 %>
+                                        <i class="fas fa-comment ms-2 me-1"></i>
+                                        <%= post.commentCount || 0 %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="/blog" class="btn btn-outline-primary">View All Posts</a>
+            </div>
+        <% } else { %>
+            <div class="text-center py-5">
+                <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No posts yet</h4>
+                <p class="text-muted">Be the first to share your story!</p>
+                <% if (user) { %>
+                    <a href="/blog/create" class="btn btn-primary">Create Your First Post</a>
+                <% } else { %>
+                    <a href="/auth/register" class="btn btn-primary">Join and Start Writing</a>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="p-4">
+                    <i class="fas fa-pen-fancy fa-3x text-primary mb-3"></i>
+                    <h4>Write & Share</h4>
+                    <p class="text-muted">Create beautiful blog posts and share your thoughts with the world.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="p-4">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h4>Connect</h4>
+                    <p class="text-muted">Engage with other writers through comments and likes.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="p-4">
+                    <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                    <h4>Grow</h4>
+                    <p class="text-muted">Track your blog's performance and grow your audience.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> 

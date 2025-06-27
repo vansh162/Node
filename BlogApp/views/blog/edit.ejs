@@ -1,0 +1,125 @@
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        Edit Post
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <%= error %>
+                        </div>
+                    <% } %>
+
+                    <form method="POST" action="/blog/<%= post._id %>?_method=PUT">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title *</label>
+                            <input type="text" class="form-control form-control-lg" id="title" name="title" 
+                                   value="<%= post.title %>" required maxlength="200">
+                            <div class="form-text">Keep it engaging and descriptive (max 200 characters)</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content *</label>
+                            <textarea class="form-control" id="content" name="content" rows="12" 
+                                      required minlength="10"><%= post.content %></textarea>
+                            <div class="form-text">Minimum 10 characters required</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags</label>
+                            <input type="text" class="form-control" id="tags" name="tags" 
+                                   value="<%= post.tags.join(', ') %>" placeholder="technology, programming, web-development">
+                            <div class="form-text">Separate tags with commas (optional)</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>Published</option>
+                                <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>Draft</option>
+                            </select>
+                            <div class="form-text">Choose whether to publish immediately or save as draft</div>
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>
+                                Update Post
+                            </button>
+                            <a href="/blog/<%= post._id %>" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Post Stats -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Post Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <h4 class="text-primary"><%= post.views %></h4>
+                            <small class="text-muted">Views</small>
+                        </div>
+                        <div class="col-4">
+                            <h4 class="text-success"><%= post.likeCount || 0 %></h4>
+                            <small class="text-muted">Likes</small>
+                        </div>
+                        <div class="col-4">
+                            <h4 class="text-info"><%= post.commentCount || 0 %></h4>
+                            <small class="text-muted">Comments</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Character counter for title
+    document.getElementById('title').addEventListener('input', function() {
+        const maxLength = 200;
+        const currentLength = this.value.length;
+        const remaining = maxLength - currentLength;
+        
+        const formText = this.parentNode.querySelector('.form-text');
+        if (remaining < 0) {
+            formText.textContent = `Title is too long (${Math.abs(remaining)} characters over limit)`;
+            formText.className = 'form-text text-danger';
+        } else {
+            formText.textContent = `${remaining} characters remaining`;
+            formText.className = 'form-text';
+        }
+    });
+
+    // Character counter for content
+    document.getElementById('content').addEventListener('input', function() {
+        const minLength = 10;
+        const currentLength = this.value.length;
+        const remaining = minLength - currentLength;
+        
+        const formText = this.parentNode.querySelector('.form-text');
+        if (remaining > 0) {
+            formText.textContent = `${remaining} more characters needed`;
+            formText.className = 'form-text text-warning';
+        } else {
+            formText.textContent = 'Minimum length requirement met';
+            formText.className = 'form-text text-success';
+        }
+    });
+</script> 

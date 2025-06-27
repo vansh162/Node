@@ -1,0 +1,162 @@
+<div class="container py-5">
+    <!-- Welcome Section -->
+    <div class="row mb-5">
+        <div class="col">
+            <div class="card bg-primary text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-2">Welcome back, <%= user.username %>!</h2>
+                            <p class="mb-0">Manage your blog posts and track your performance.</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <a href="/blog/create" class="btn btn-light">
+                                <i class="fas fa-plus me-2"></i>
+                                Create New Post
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Your Posts -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-alt me-2"></i>
+                        Your Posts
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <% if (userPosts && userPosts.length > 0) { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Views</th>
+                                        <th>Likes</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% userPosts.forEach(post => { %>
+                                        <tr>
+                                            <td>
+                                                <a href="/blog/<%= post._id %>" class="text-decoration-none">
+                                                    <%= post.title %>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <% if (post.status === 'published') { %>
+                                                    <span class="badge bg-success">Published</span>
+                                                <% } else { %>
+                                                    <span class="badge bg-warning">Draft</span>
+                                                <% } %>
+                                            </td>
+                                            <td><%= post.views %></td>
+                                            <td><%= post.likeCount || 0 %></td>
+                                            <td><%= new Date(post.createdAt).toLocaleDateString() %></td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="/blog/<%= post._id %>" class="btn btn-outline-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="/blog/<%= post._id %>/edit" class="btn btn-outline-secondary">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button onclick="deletePost('<%= post._id %>')" class="btn btn-outline-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center py-4">
+                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No posts yet</h5>
+                            <p class="text-muted">Start writing your first blog post!</p>
+                            <a href="/blog/create" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>
+                                Create Your First Post
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Recent Posts -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock me-2"></i>
+                        Recent Posts
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <% if (recentPosts && recentPosts.length > 0) { %>
+                        <% recentPosts.forEach(post => { %>
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <img src="/images/<%= post.author.avatar || 'default-avatar.png' %>" 
+                                         alt="<%= post.author.username %>" 
+                                         class="user-avatar">
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">
+                                        <a href="/blog/<%= post._id %>" class="text-decoration-none">
+                                            <%= post.title %>
+                                        </a>
+                                    </h6>
+                                    <small class="text-muted">
+                                        by <%= post.author.username %> • 
+                                        <%= new Date(post.createdAt).toLocaleDateString() %>
+                                    </small>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p class="text-muted mb-0">No recent posts</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Quick Stats
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h4 class="text-primary"><%= userPosts ? userPosts.length : 0 %></h4>
+                            <small class="text-muted">Posts</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-success">
+                                <%= userPosts ? userPosts.reduce((total, post) => total + (post.views || 0), 0) : 0 %>
+                            </h4>
+                            <small class="text-muted">Total Views</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

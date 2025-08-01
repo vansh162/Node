@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Task Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <%- include('partials/navbar') %>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .welcome-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .quick-actions {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .action-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+        }
+        
+        .recent-tasks {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .task-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .task-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-in-progress {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome back!</h1>
+            <p class="welcome-subtitle">Manage your tasks efficiently</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stat-number" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number" id="pendingTasks">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-number" id="completedTasks">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <div class="stat-number" id="totalCategories">0</div>
+                <div class="stat-label">Categories</div>
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="actions-grid">
+                <a href="/tasks/new" class="action-btn">
+                    <i class="fas fa-plus action-icon"></i>
+                    <span>Add New Task</span>
+                </a>
+                
+                <a href="/tasks" class="action-btn">
+                    <i class="fas fa-list action-icon"></i>
+                    <span>View All Tasks</span>
+                </a>
+                
+                <a href="/categories" class="action-btn">
+                    <i class="fas fa-folder action-icon"></i>
+                    <span>Manage Categories</span>
+                </a>
+                
+                <a href="/profile" class="action-btn">
+                    <i class="fas fa-user action-icon"></i>
+                    <span>My Profile</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="recent-tasks">
+            <h2 class="section-title">Recent Tasks</h2>
+            <div id="recentTasksContainer">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Loading recent tasks...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+        
+        async function loadDashboardData() {
+            try {
+                console.log('Loading dashboard data...');
+                
+                // Load recent tasks (this will give us the total count)
+                const tasksResponse = await fetch('/api/tasks/my-tasks', {
+                    credentials: 'include'
+                });
+                
+                console.log('Tasks response status:', tasksResponse.status);
+                
+                if (tasksResponse.ok) {
+                    const tasksData = await tasksResponse.json();
+                    console.log('Tasks data:', tasksData);
+                    
+                    // Calculate statistics from tasks data
+                    const tasks = tasksData.tasks || [];
+                    const totalTasks = tasks.length;
+                    const pendingTasks = tasks.filter(task => task.status === 'pending').length;
+                    const completedTasks = tasks.filter(task => task.status === 'completed').length;
+                    
+                    console.log('Calculated stats:', { totalTasks, pendingTasks, completedTasks });
+                    
+                    // Update statistics
+                    document.getElementById('totalTasks').textContent = totalTasks;
+                    document.getElementById('pendingTasks').textContent = pendingTasks;
+                    document.getElementById('completedTasks').textContent = completedTasks;
+                    
+                    // Display recent tasks
+                    displayRecentTasks(tasks);
+                } else {
+                    console.error('Tasks response not ok:', tasksResponse.status);
+                }
+                
+                // Load categories count
+                const categoriesResponse = await fetch('/api/categories/my-categories', {
+                    credentials: 'include'
+                });
+                
+                console.log('Categories response status:', categoriesResponse.status);
+                
+                if (categoriesResponse.ok) {
+                    const categoriesData = await categoriesResponse.json();
+                    console.log('Categories data:', categoriesData);
+                    document.getElementById('totalCategories').textContent = categoriesData.categories.length;
+                } else {
+                    console.error('Categories response not ok:', categoriesResponse.status);
+                }
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+        
+
+        
+        function displayRecentTasks(tasks) {
+            const container = document.getElementById('recentTasksContainer');
+            
+            if (!tasks || tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <p>No tasks yet. Create your first task to get started!</p>
+                        <a href="/tasks/new" class="action-btn" style="margin-top: 15px; display: inline-flex;">
+                            <i class="fas fa-plus action-icon"></i>
+                            <span>Create Task</span>
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            const recentTasks = tasks.slice(0, 5); // Show only 5 recent tasks
+            
+            container.innerHTML = recentTasks.map(task => `
+                <div class="task-item">
+                    <div class="task-info">
+                        <h4>${task.title}</h4>
+                        <div class="task-meta">
+                            ${task.category ? `<span style="color: ${task.category.color};">${task.category.name}</span> • ` : ''}
+                            ${task.dueDate ? `<span><i class="fas fa-calendar"></i> ${new Date(task.dueDate).toLocaleDateString()}</span>` : ''}
+                        </div>
+                    </div>
+                    <span class="task-status status-${task.status}">${task.status}</span>
+                </div>
+            `).join('');
+        }
+        
+
+        
+        // Check if we should refresh the dashboard (e.g., after returning from task creation)
+        if (sessionStorage.getItem('shouldRefreshDashboard')) {
+            sessionStorage.removeItem('shouldRefreshDashboard');
+            setTimeout(() => {
+                loadDashboardData();
+            }, 500);
+        }
+    </script>
+</body>
+</html> 

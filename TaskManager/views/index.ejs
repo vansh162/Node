@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .status {
+            background: #e8f5e8;
+            color: #2d5a2d;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .features {
+            text-align: left;
+            margin-top: 30px;
+        }
+        
+        .features h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .features ul {
+            list-style: none;
+        }
+        
+        .features li {
+            padding: 8px 0;
+            color: #555;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .features li:before {
+            content: "✓";
+            color: #4caf50;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .tech-stack {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .tech-stack h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .tech-tag {
+            background: #f0f0f0;
+            color: #666;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .auth-buttons {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .auth-buttons h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .auth-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .register-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .login-btn {
+            background: transparent;
+            color: #667eea;
+            border-color: #667eea;
+        }
+        
+        .login-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Manager App</h1>
+        <p class="subtitle">A comprehensive task management solution</p>
+        
+        <div class="status">
+            <strong>✅ Server Running Successfully!</strong><br>
+            MongoDB connected and ready for development
+        </div>
+        
+        <div class="features">
+            <h3>Features Implemented:</h3>
+            <ul>
+                <li>JWT Authentication with Cookies</li>
+                <li>Role-Based Access Control (User/Admin)</li>
+                <li>Multi-User Support</li>
+                <li>Task Categorization</li>
+                <li>MongoDB Database with Mongoose</li>
+                <li>Express.js Server Setup</li>
+                <li>Minimalist Design</li>
+            </ul>
+        </div>
+        
+        <div class="tech-stack">
+            <h4>Tech Stack:</h4>
+            <div class="tech-tags">
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">Express.js</span>
+                <span class="tech-tag">MongoDB</span>
+                <span class="tech-tag">Mongoose</span>
+                <span class="tech-tag">JWT</span>
+                <span class="tech-tag">EJS</span>
+                <span class="tech-tag">bcryptjs</span>
+            </div>
+        </div>
+        
+        <div class="auth-buttons">
+            <h4>Test Authentication:</h4>
+            <div class="button-group">
+                <a href="/auth-test" class="auth-btn register-btn">Register & Login Test</a>
+                <a href="/auth-test" class="auth-btn login-btn">Authentication Demo</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

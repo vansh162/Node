@@ -1,0 +1,269 @@
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <a href="/" class="brand-link">
+                <i class="fas fa-tasks"></i>
+                Task Manager
+            </a>
+        </div>
+        
+        <div class="nav-menu">
+            <% if (typeof user !== 'undefined' && user) { %>
+                <!-- Authenticated User Menu -->
+                <div class="nav-item">
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="/tasks" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        My Tasks
+                    </a>
+                </div>
+                
+                <% if (user.role === 'admin') { %>
+                    <div class="nav-item">
+                        <a href="/tasks/all-tasks" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            All User Tasks
+                        </a>
+                    </div>
+                    
+                    <div class="nav-item">
+                        <a href="/categories" class="nav-link">
+                            <i class="fas fa-tags"></i>
+                            Categories
+                        </a>
+                    </div>
+                <% } %>
+                
+
+            <% } else { %>
+                <!-- Guest Menu -->
+                <div class="nav-item">
+                    <a href="/login" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="/register" class="nav-link btn-register">
+                        <i class="fas fa-user-plus"></i>
+                        Register
+                    </a>
+                </div>
+            <% } %>
+        </div>
+        
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>
+
+<style>
+.navbar {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+
+.nav-brand .brand-link {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background: #f8f9fa;
+    color: #667eea;
+}
+
+.btn-register {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white !important;
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 12px 16px;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+    color: #667eea;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #e9ecef;
+    margin: 8px 0;
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+}
+
+.nav-toggle span {
+    width: 25px;
+    height: 3px;
+    background: #333;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 60px);
+        background: white;
+        flex-direction: column;
+        padding: 20px;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .nav-toggle {
+        display: flex;
+    }
+    
+    .dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        margin-top: 10px;
+    }
+}
+</style>
+
+<script>
+// Mobile menu toggle
+document.querySelector('.nav-toggle').addEventListener('click', function() {
+    document.querySelector('.nav-menu').classList.toggle('active');
+});
+
+// Logout function
+function logout(event) {
+    event.preventDefault();
+    
+    fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/';
+        }
+    })
+    .catch(error => {
+        console.error('Logout error:', error);
+        window.location.href = '/';
+    });
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const navMenu = document.querySelector('.nav-menu');
+    const navToggle = document.querySelector('.nav-toggle');
+    
+    if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+        navMenu.classList.remove('active');
+    }
+});
+</script> 

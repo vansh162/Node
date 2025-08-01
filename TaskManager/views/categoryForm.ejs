@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Form - Task Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <%- include('partials/navbar') %>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #667eea;
+        }
+
+        .color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-picker::-webkit-color-swatch {
+            border: none;
+            border-radius: 8px;
+        }
+
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #eee;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .form-card {
+                padding: 25px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-card">
+            <div class="form-header">
+                <h1 class="form-title" id="form-title">Create Category</h1>
+                <p class="form-subtitle">Organize your tasks with custom categories</p>
+            </div>
+
+            <div id="alert-container"></div>
+
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="name" class="form-label">Category Name *</label>
+                    <input type="text" id="name" name="name" class="form-input" required>
+                    <div class="error-message" id="name-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-input form-textarea" placeholder="Describe what this category is for..."></textarea>
+                    <div class="error-message" id="description-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="color" class="form-label">Color</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color" name="color" class="color-picker" value="#667eea">
+                        <div class="color-preview" id="color-preview" style="background-color: #667eea;"></div>
+                    </div>
+                    <div class="error-message" id="color-error"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span class="btn-text">
+                            <i class="fas fa-save"></i> Save Category
+                        </span>
+                        <span class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Saving...
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const categoryForm = document.getElementById('categoryForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const alertContainer = document.getElementById('alert-container');
+        const colorPicker = document.getElementById('color');
+        const colorPreview = document.getElementById('color-preview');
+        
+        let isEditMode = false;
+        let categoryId = null;
+
+        // Check if we're in edit mode
+        const pathSegments = window.location.pathname.split('/');
+        if (pathSegments.includes('edit')) {
+            isEditMode = true;
+            categoryId = pathSegments[pathSegments.length - 2];
+            document.getElementById('form-title').textContent = 'Edit Category';
+            submitBtn.querySelector('.btn-text').innerHTML = '<i class="fas fa-save"></i> Update Category';
+            
+            // Load category data
+            loadCategoryData();
+        }
+
+        // Color picker preview
+        colorPicker.addEventListener('input', function() {
+            colorPreview.style.backgroundColor = this.value;
+        });
+
+        // Form submission
+        categoryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(categoryForm);
+            const categoryData = {
+                name: formData.get('name'),
+                description: formData.get('description'),
+                color: formData.get('color')
+            };
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.querySelector('.btn-text').style.display = 'none';
+            submitBtn.querySelector('.loading').style.display = 'inline-block';
+            
+            // Clear previous alerts and errors
+            alertContainer.innerHTML = '';
+            clearErrors();
+            
+            try {
+                const url = isEditMode ? `/api/categories/${categoryId}` : '/api/categories';
+                const method = isEditMode ? 'PUT' : 'POST';
+                
+                console.log('Sending category data:', categoryData);
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(categoryData)
+                });
+                
+                const data = await response.json();
+                console.log('Response:', data);
+                
+                if (data.success) {
+                    showAlert(isEditMode ? 'Category updated successfully!' : 'Category created successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/categories';
+                    }, 1500);
+                } else {
+                    if (data.errors && data.errors.length > 0) {
+                        showValidationErrors(data.errors);
+                    } else {
+                        showAlert(data.message || 'Error saving category', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Error saving category:', error);
+                showAlert('Network error. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.querySelector('.btn-text').style.display = 'inline';
+                submitBtn.querySelector('.loading').style.display = 'none';
+            }
+        });
+
+        async function loadCategoryData() {
+            try {
+                const response = await fetch(`/api/categories/${categoryId}`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const category = data.category;
+                    document.getElementById('name').value = category.name;
+                    document.getElementById('description').value = category.description || '';
+                    document.getElementById('color').value = category.color || '#667eea';
+                    colorPreview.style.backgroundColor = category.color || '#667eea';
+                } else {
+                    showAlert('Failed to load category data', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading category:', error);
+                showAlert('Network error. Please try again.', 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                    ${message}
+                </div>
+            `;
+        }
+
+        function showValidationErrors(errors) {
+            errors.forEach(error => {
+                const field = error.path;
+                const message = error.msg;
+                
+                const errorElement = document.getElementById(`${field}-error`);
+                if (errorElement) {
+                    errorElement.textContent = message;
+                    errorElement.style.display = 'block';
+                }
+            });
+        }
+
+        function clearErrors() {
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(element => {
+                element.style.display = 'none';
+                element.textContent = '';
+            });
+        }
+    </script>
+</body>
+</html> 

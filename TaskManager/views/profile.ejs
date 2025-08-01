@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Task Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <%- include('partials/navbar') %>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .profile-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .profile-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .info-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input[type="password"] {
+            -webkit-text-security: disc;
+            -moz-text-security: disc;
+            text-security: disc;
+        }
+
+        .password-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-input-container input {
+            flex: 1;
+            padding-right: 40px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .password-toggle:focus {
+            outline: none;
+            color: #667eea;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h1 class="profile-title">My Profile</h1>
+                <p class="profile-subtitle">Manage your account information</p>
+            </div>
+
+            <div id="alert-container"></div>
+
+            <div class="profile-info">
+                <div class="info-section">
+                    <h3 class="info-title">
+                        <i class="fas fa-user-circle"></i>
+                        Account Information
+                    </h3>
+                    <div class="info-item">
+                        <div class="info-label">Username</div>
+                        <div class="info-value" id="username">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value" id="email">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Role</div>
+                        <div class="info-value" id="role">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Member Since</div>
+                        <div class="info-value" id="createdAt">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="info-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Statistics
+                    </h3>
+                    <div class="info-item">
+                        <div class="info-label">Total Tasks</div>
+                        <div class="info-value" id="totalTasks">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Categories</div>
+                        <div class="info-value" id="totalCategories">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Completed Tasks</div>
+                        <div class="info-value" id="completedTasks">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Pending Tasks</div>
+                        <div class="info-value" id="pendingTasks">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <button onclick="editProfile()" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+                <button onclick="changePassword()" class="btn btn-secondary">
+                    <i class="fas fa-key"></i> Change Password
+                </button>
+                <button onclick="logout()" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load profile data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfileData();
+        });
+
+        async function loadProfileData() {
+            try {
+                // Load user profile
+                const profileResponse = await fetch('/api/auth/profile', {
+                    credentials: 'include'
+                });
+                
+                if (profileResponse.ok) {
+                    const profileData = await profileResponse.json();
+                    if (profileData.success) {
+                        displayProfileInfo(profileData.user);
+                    }
+                }
+
+                // Load user statistics
+                const tasksResponse = await fetch('/api/tasks/my-tasks', {
+                    credentials: 'include'
+                });
+                
+                if (tasksResponse.ok) {
+                    const tasksData = await tasksResponse.json();
+                    if (tasksData.success) {
+                        displayTaskStats(tasksData.tasks);
+                    }
+                }
+
+                // Load categories count
+                const categoriesResponse = await fetch('/api/categories/my-categories', {
+                    credentials: 'include'
+                });
+                
+                if (categoriesResponse.ok) {
+                    const categoriesData = await categoriesResponse.json();
+                    if (categoriesData.success) {
+                        document.getElementById('totalCategories').textContent = categoriesData.categories.length;
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error loading profile data:', error);
+                showAlert('Error loading profile data', 'error');
+            }
+        }
+
+        function displayProfileInfo(user) {
+            document.getElementById('username').textContent = user.username;
+            document.getElementById('email').textContent = user.email;
+            document.getElementById('role').textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+            document.getElementById('createdAt').textContent = new Date(user.createdAt).toLocaleDateString();
+        }
+
+        function displayTaskStats(tasks) {
+            const totalTasks = tasks.length;
+            const completedTasks = tasks.filter(task => task.status === 'completed').length;
+            const pendingTasks = tasks.filter(task => task.status === 'pending').length;
+
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('completedTasks').textContent = completedTasks;
+            document.getElementById('pendingTasks').textContent = pendingTasks;
+        }
+
+        function editProfile() {
+            // Create modal for editing profile
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Edit Profile</h3>
+                        <button onclick="closeModal()" class="close-btn">&times;</button>
+                    </div>
+                    <form id="editProfileForm">
+                        <div class="form-group">
+                            <label for="editUsername">Username</label>
+                            <input type="text" id="editUsername" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" id="editEmail" name="email" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Populate form with current data
+            document.getElementById('editUsername').value = document.getElementById('username').textContent;
+            document.getElementById('editEmail').value = document.getElementById('email').textContent;
+            
+            // Handle form submission
+            document.getElementById('editProfileForm').addEventListener('submit', handleEditProfile);
+        }
+
+        function changePassword() {
+            // Create modal for changing password
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Change Password</h3>
+                        <button onclick="closeModal()" class="close-btn">&times;</button>
+                    </div>
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <div class="password-input-container">
+                                <input type="password" id="currentPassword" name="currentPassword" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('currentPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <div class="password-input-container">
+                                <input type="password" id="newPassword" name="newPassword" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('newPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <div class="password-input-container">
+                                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Handle form submission
+            document.getElementById('changePasswordForm').addEventListener('submit', handleChangePassword);
+        }
+
+        async function handleEditProfile(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const profileData = {
+                username: formData.get('username'),
+                email: formData.get('email')
+            };
+            
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(profileData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Profile updated successfully!', 'success');
+                    closeModal();
+                    loadProfileData(); // Reload profile data
+                } else {
+                    showAlert(data.message || 'Error updating profile', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showAlert('Network error. Please try again.', 'error');
+            }
+        }
+
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const passwordData = {
+                currentPassword: formData.get('currentPassword'),
+                newPassword: formData.get('newPassword'),
+                confirmPassword: formData.get('confirmPassword')
+            };
+            
+            // Validate password confirmation
+            if (passwordData.newPassword !== passwordData.confirmPassword) {
+                showAlert('New passwords do not match!', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/auth/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(passwordData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Password changed successfully!', 'success');
+                    closeModal();
+                } else {
+                    showAlert(data.message || 'Error changing password', 'error');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showAlert('Network error. Please try again.', 'error');
+            }
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                    ${message}
+                </div>
+            `;
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggleBtn = input.parentElement.querySelector('.password-toggle');
+            const icon = toggleBtn.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Logged out successfully! Redirecting to login...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1500);
+                } else {
+                    showAlert('Error logging out', 'error');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                showAlert('Network error during logout', 'error');
+            }
+        }
+    </script>
+</body>
+</html> 

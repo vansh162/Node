@@ -1,0 +1,40 @@
+<div class="card">
+    <h1 style="margin-bottom: 30px; color: #333;">All Articles</h1>
+    
+    <% if (articles && articles.length > 0) { %>
+        <% articles.forEach(article => { %>
+            <div class="article-card">
+                <a href="/articles/<%= article._id %>" class="article-title">
+                    <%= article.title %>
+                </a>
+                
+                <div class="article-meta">
+                    By <strong><%= article.author.username %></strong> • 
+                    <%= new Date(article.createdAt).toLocaleDateString() %>
+                </div>
+                
+                <div class="article-content">
+                    <%= article.content.substring(0, 200) %>...
+                </div>
+                
+                <% if (article.tags && article.tags.length > 0) { %>
+                    <div class="article-tags">
+                        <% article.tags.forEach(tag => { %>
+                            <span class="tag"><%= tag %></span>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <div style="text-align: center; padding: 40px;">
+            <h3 style="color: #666; margin-bottom: 20px;">No articles found</h3>
+            <p style="color: #888;">Be the first to write an article!</p>
+            <% if (user) { %>
+                <a href="/articles/new" class="btn btn-primary" style="margin-top: 20px;">Write Your First Article</a>
+            <% } else { %>
+                <a href="/auth/login" class="btn btn-primary" style="margin-top: 20px;">Login to Write Articles</a>
+            <% } %>
+        </div>
+    <% } %>
+</div> 

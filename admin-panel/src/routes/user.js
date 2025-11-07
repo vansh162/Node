@@ -1,0 +1,24 @@
+AdminPanel/
+│
+├── config/
+│   └── db.js
+│
+├── models/
+│   └── User.js
+│
+├── routes/
+│   ├── auth.js
+│   └── index.js
+│
+├── views/
+│   ├── login.ejs
+│   ├── register.ejs
+│   └── dashboard.ejs
+│
+├── public/
+│   └── css/
+│   └── js/
+│
+├── app.js
+├── package.json
+└── .env

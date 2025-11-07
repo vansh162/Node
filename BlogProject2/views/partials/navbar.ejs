@@ -1,0 +1,23 @@
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <a href="/articles" class="nav-logo">BlogHub</a>
+        </div>
+        
+        <div class="nav-menu">
+            <a href="/articles" class="nav-link">All Articles</a>
+            
+            <% if (user) { %>
+                <a href="/articles/my-articles" class="nav-link">My Articles</a>
+                <a href="/articles/new" class="nav-link">Write Article</a>
+                <div class="nav-user">
+                    <span class="username"><%= user.username %></span>
+                    <a href="/auth/logout" class="nav-link logout">Logout</a>
+                </div>
+            <% } else { %>
+                <a href="/auth/login" class="nav-link">Login</a>
+                <a href="/auth/register" class="nav-link">Register</a>
+            <% } %>
+        </div>
+    </div>
+</nav> 
